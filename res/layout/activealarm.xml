@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:gravity="bottom"
     android:orientation="vertical"
     tools:context="${relativePackage}.${activityClass}" >
 
@@ -13,10 +15,42 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="5dp"
         android:background="#ffffff"/>
+
     <TextView
         android:id="@+id/time"
-        android:layout_marginTop="50dp"
-        android:layout_width="wrap_content"
+        android:layout_width="360dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="Time left: 60"
+        android:textColor="#1E88E5"
+        android:textSize="30sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	
+    	android:layout_marginTop="50dp" >
+	    <com.gc.materialdesign.views.ButtonFlat
+                android:id="@+id/callSercurity"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+				android:gravity="center"
+                android:background="#1E88E5"
+                android:text="Call Security"
+                android:textSize="35sp" />
+	    <View
+		        android:layout_width="1dp"
+		        android:layout_marginTop="5dp"
+		        android:layout_height="40dp"
+		        android:background="#1E88E5" />
+	    <com.gc.materialdesign.views.ButtonFlat
+                android:id="@+id/cancelAlarm"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:background="#1E88E5"
+                android:text="Cancel"
+                android:textSize="35sp" />
+	</LinearLayout>
 </LinearLayout>

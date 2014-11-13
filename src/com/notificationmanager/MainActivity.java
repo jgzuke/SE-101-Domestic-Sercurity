@@ -5,9 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.gc.materialdesign.views.ButtonFloatSmall;
+import com.gc.materialdesign.views.ButtonFlat;
 import com.gc.materialdesign.views.ProgressBarIndeterminate;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -17,18 +16,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnKeyListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -48,16 +42,16 @@ public class MainActivity extends Activity
 	private int timeTillCall = 0;
 	private Handler mHandler = new Handler();
 	private AlertDialog.Builder builder;
-	private AlertDialog dialog;
+	private AlertDialog passDialog;
+	private EditText passInput;
 	private LayoutInflater layoutInflater;
-	private int view = 0; //0:main, 1:
 	private TextView timeText;
 	private Runnable counterdownCaller = new Runnable()
 	{
 		public void run()
 		{
 			timeTillCall --;
-			timeText.setText(Integer.toString(timeTillCall));
+			timeText.setText("Time left: "+Integer.toString(timeTillCall));
 			if(timeTillCall==0)
 			{
 				activity.timeUp();
@@ -75,9 +69,12 @@ public class MainActivity extends Activity
 		if(savedData[0] != 0) readSaveData();
 		layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+	    getActionBar().hide();
 		setContentView(R.layout.mainscreen);
-		((ButtonFloatSmall) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
-		passwordPrompt(savedData[0] != 0);
+		((ButtonFlat) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
+		((ButtonFlat) findViewById(R.id.changePass)).setOnClickListener(changePassword);
+		if(savedData[0]==0) pickPasswordPrompt(false);
     }
     /*
      * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
@@ -99,8 +96,9 @@ public class MainActivity extends Activity
         	}
     		grid.addView(row);
     	}
-    	timeText = (TextView) fullLayout.getChildAt(1);
-    	timeText.setTextSize(50);
+    	timeText = (TextView) findViewById(R.id.time);
+    	((ButtonFlat) findViewById(R.id.cancelAlarm)).setOnClickListener(cancelAlarm);
+    	((ButtonFlat) findViewById(R.id.callSercurity)).setOnClickListener(callSercurity);
     	timeTillCall = 10;
     	counterdownCaller.run();
     }
@@ -113,100 +111,77 @@ public class MainActivity extends Activity
     	LinearLayout fullLayout = (LinearLayout) layoutInflater.inflate(R.layout.mainscreen, null, false);
     	setContentView(fullLayout);
     	Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_LONG).show();
+    	((ButtonFlat) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
+		((ButtonFlat) findViewById(R.id.changePass)).setOnClickListener(changePassword);
     }
     /*
      * time finishes on alarm
      */
     public void timeUp()
     {
+    	alarmActive = false;
     	builder = new AlertDialog.Builder(this);
 		ProgressBarIndeterminate progressBar = (ProgressBarIndeterminate) layoutInflater.inflate(R.xml.progressbar, null, false);
 		builder.setView(progressBar);
 		builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
 		{
 			@Override
-			public void onClick(DialogInterface dialog, int id)
+			public void onClick(DialogInterface timeupDialog, int id)
 			{
-				// User cancelled the dialog
+				//TODO make a call
+				cancelAlarm();
 			}
 		});
 		builder.setTitle("Calling Security");
-		final AlertDialog dialog = builder.create();
-		dialog.show();
+		final AlertDialog timeupDialog = builder.create();
+		timeupDialog.show();
     }
     /*
      * creates alertdialog to choose a password
      */
-    public void passwordPrompt(final boolean alreadyChosen)
+    public void pickPasswordPrompt(boolean cancelable)
     {
-    	builder = new AlertDialog.Builder(this);
-		final EditText input = new EditText(this);
-		input.setRawInputType(InputType.TYPE_CLASS_NUMBER);
-		input.setText("");
-		builder.setView(input);
-		builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int id)
-			{
-				// User cancelled the dialog
-			}
-		});
-		builder.setTitle("Pick a 4 digit PassCode");
-		if(alreadyChosen) builder.setTitle("Enter your 4 digit PassCode");
-		final AlertDialog dialog = builder.create();
-		dialog.show();
-		dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+    	buildPasswordPromptBox(cancelable, "Enter your 4 digit Passcode");
+		passDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View set)
 			{
-				String passwordEnteredRaw = input.getText().toString();
-				if(alreadyChosen)
-				{
+				String passwordEnteredRaw = passInput.getText().toString();
 					if(passwordEnteredRaw.length()!=4)
 					{
 						Toast.makeText(context, "Try Again (4 digits)", Toast.LENGTH_LONG).show();
-						input.setText("");
+						passInput.setText("");
 					} else
 					{
 						passwordEntered = Integer.parseInt(passwordEnteredRaw);
 						if(passwordEntered != password)
 						{
 							Toast.makeText(context, "Incorrect Passcode", Toast.LENGTH_LONG).show();
-							input.setText("");
+							passInput.setText("");
 						} else
 						{
-							dialog.dismiss();
-							if(alarmActive)
-							{
-								alarmActive = false;
-							}
-							InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-			        		imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
+							passDialog.dismiss();
+							setNewPassword();
 						}
 					}
-				} else
-				{
-					if(passwordEnteredRaw.length()!=4)
-					{
-						Toast.makeText(context, "Pick Again (4 digits)", Toast.LENGTH_LONG).show();
-						input.setText("");
-					} else
-					{
-						password = Integer.parseInt(passwordEnteredRaw);
-						Log.e("test", Integer.toString(password));
-						savedData[0] = 1;
-						setSaveData();
-						write();
-						dialog.dismiss();
-		        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-		        		imm.hideSoftInputFromWindow(input.getWindowToken(), 0);
-					}
-				}
 			}
 		});
     }
+    View.OnClickListener callSercurity = new View.OnClickListener()
+	{
+		public void onClick(View v)
+		{
+			 timeUp();
+		}
+	};
+    View.OnClickListener cancelAlarm = new View.OnClickListener()
+	{
+		public void onClick(View v)
+		{
+			 cancelAlarm();
+		}
+	};
     View.OnClickListener callAlarm = new View.OnClickListener()
 	{
 		public void onClick(View v)
@@ -215,6 +190,70 @@ public class MainActivity extends Activity
 			activateAlarm(code);
 		}
 	};
+	View.OnClickListener changePassword = new View.OnClickListener()
+	{
+		public void onClick(View v)
+		{
+			pickPasswordPrompt(true);
+		}
+	};
+	public void setNewPassword()
+	{
+		buildPasswordPromptBox(true, "Pick a 4 digit Passcode");
+		passDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View set)
+			{
+				String passwordEnteredRaw = passInput.getText().toString();
+					if(passwordEnteredRaw.length()!=4)
+					{
+						Toast.makeText(context, "Pick Again (4 digits)", Toast.LENGTH_LONG).show();
+						passInput.setText("");
+					} else
+					{
+						password = Integer.parseInt(passwordEnteredRaw);
+						Log.e("test", Integer.toString(password));
+						savedData[0] = 1;
+						setSaveData();
+						write();
+						passDialog.dismiss();
+		        		InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+		        		imm.hideSoftInputFromWindow(passInput.getWindowToken(), 0);
+					}
+			}
+		});
+	}
+	public void buildPasswordPromptBox(boolean negativeButton, String title)
+	{
+		builder = new AlertDialog.Builder(this);
+		passInput = new EditText(this);
+		passInput.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+		passInput.setText("");
+		builder.setView(passInput);
+		builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int id)
+			{
+				// User cancelled the dialog
+			}
+		});
+		if(negativeButton)
+		{
+			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int id)
+				{
+					// User cancelled the dialog
+				}
+			});
+		}
+		builder.setTitle(title);
+		passDialog = builder.create();
+		passDialog.show();
+	}
     /**
 	 * set data to write it to save file
 	 */
@@ -242,7 +281,6 @@ public class MainActivity extends Activity
 		}
 		catch(IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		closeRead();
@@ -259,7 +297,6 @@ public class MainActivity extends Activity
 		}
 		catch(IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		closeWrite();
@@ -291,7 +328,6 @@ public class MainActivity extends Activity
 		}
 		catch(FileNotFoundException e)
 		{
-			// TODO Auto-generated catch block
 		}
 	}
 	/**
@@ -305,7 +341,6 @@ public class MainActivity extends Activity
 		}
 		catch(IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -320,7 +355,6 @@ public class MainActivity extends Activity
 		}
 		catch(IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -45,32 +45,32 @@ public final class R {
 		public static final int sprite_check = 0x7f020094;
 	}
 	public static final class id {
-		public static final int blue = 0x7f0b0055;
-		public static final int button = 0x7f0b0048;
-		public static final int buttonFloat = 0x7f0b004a;
-		public static final int buttonFloatSmall = 0x7f0b004b;
-		public static final int button_accept = 0x7f0b0059;
-		public static final int button_cancel = 0x7f0b0058;
-		public static final int buttonflat = 0x7f0b0047;
-		public static final int checkBox = 0x7f0b004c;
-		public static final int contentDialog = 0x7f0b0056;
-		public static final int green = 0x7f0b0054;
-		public static final int layout = 0x7f0b0046;
-		public static final int message = 0x7f0b0057;
+		public static final int blue = 0x7f0b0057;
+		public static final int button = 0x7f0b004a;
+		public static final int buttonFloat = 0x7f0b004c;
+		public static final int buttonFloatSmall = 0x7f0b004d;
+		public static final int button_accept = 0x7f0b005b;
+		public static final int button_cancel = 0x7f0b005a;
+		public static final int buttonflat = 0x7f0b0049;
+		public static final int checkBox = 0x7f0b004e;
+		public static final int contentDialog = 0x7f0b0058;
+		public static final int green = 0x7f0b0056;
+		public static final int layout = 0x7f0b0048;
+		public static final int message = 0x7f0b0059;
 		public static final int number_indicator_spinner_content = 0x7f0b005f;
-		public static final int progressBarCircularIndetermininate = 0x7f0b0051;
-		public static final int progressBarIndeterminate = 0x7f0b004f;
-		public static final int progressBarIndeterminateDeterminate = 0x7f0b0050;
-		public static final int progressDeterminate = 0x7f0b004e;
-		public static final int red = 0x7f0b0053;
-		public static final int scroll = 0x7f0b0045;
+		public static final int progressBarCircularIndetermininate = 0x7f0b0053;
+		public static final int progressBarIndeterminate = 0x7f0b0051;
+		public static final int progressBarIndeterminateDeterminate = 0x7f0b0052;
+		public static final int progressDeterminate = 0x7f0b0050;
+		public static final int red = 0x7f0b0055;
+		public static final int scroll = 0x7f0b0047;
 		public static final int shape_bacground = 0x7f0b0062;
-		public static final int slider = 0x7f0b0049;
+		public static final int slider = 0x7f0b004b;
 		public static final int snackbar = 0x7f0b0060;
-		public static final int switchView = 0x7f0b004d;
+		public static final int switchView = 0x7f0b004f;
 		public static final int text = 0x7f0b0061;
 		public static final int title = 0x7f0b002f;
-		public static final int viewColor = 0x7f0b0052;
+		public static final int viewColor = 0x7f0b0054;
 	}
 	public static final class layout {
 		public static final int activity_main = 0x7f030020;
