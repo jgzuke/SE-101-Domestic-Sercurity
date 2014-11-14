@@ -11,7 +11,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -35,7 +37,6 @@ public class MainActivity extends Activity
 	private byte[] savedData = new byte[3];
 	private int password;
 	private int passwordEntered;
-	protected ImageLibrary imageLibrary;
 	private boolean alarmActive = false;
 	final private Context context = this;
 	final private MainActivity activity = this;
@@ -129,10 +130,13 @@ public class MainActivity extends Activity
 			public void onClick(DialogInterface timeupDialog, int id)
 			{
 				//TODO make a call
-				cancelAlarm();
 			}
 		});
 		builder.setTitle("Calling Security");
+		/*Uri number = Uri.parse("tel:6474003808");
+		Intent intent = new Intent(Intent.ACTION_CALL, number);
+		context.startActivity(intent);*/
+		cancelAlarm();
 		final AlertDialog timeupDialog = builder.create();
 		timeupDialog.show();
     }
