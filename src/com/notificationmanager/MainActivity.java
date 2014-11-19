@@ -75,7 +75,7 @@ public class MainActivity extends Activity
 		setContentView(R.layout.mainscreen);
 		((ButtonFlat) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
 		((ButtonFlat) findViewById(R.id.changePass)).setOnClickListener(changePassword);
-		if(savedData[0]==0) pickPasswordPrompt(false);
+		if(savedData[0]==0) setNewPassword();
     }
     /*
      * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
@@ -121,24 +121,10 @@ public class MainActivity extends Activity
     public void timeUp()
     {
     	alarmActive = false;
-    	builder = new AlertDialog.Builder(this);
-		ProgressBarIndeterminate progressBar = (ProgressBarIndeterminate) layoutInflater.inflate(R.xml.progressbar, null, false);
-		builder.setView(progressBar);
-		builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface timeupDialog, int id)
-			{
-				//TODO make a call
-			}
-		});
-		builder.setTitle("Calling Security");
-		/*Uri number = Uri.parse("tel:6474003808");
-		Intent intent = new Intent(Intent.ACTION_CALL, number);
-		context.startActivity(intent);*/
+    	Intent intent = new Intent(Intent.ACTION_CALL);
+		intent.setData(Uri.parse("tel:2268688127"));
+		context.startActivity(intent);
 		cancelAlarm();
-		final AlertDialog timeupDialog = builder.create();
-		timeupDialog.show();
     }
     /*
      * creates alertdialog to choose a password
