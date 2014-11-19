@@ -298,6 +298,32 @@ public class MainActivity extends Activity
     	Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_LONG).show();
     	((ButtonFlat) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
 		((ButtonFlat) findViewById(R.id.changePass)).setOnClickListener(changePassword);
+		
+		
+		//Sends message back to server saying it was cancelled
+		//TODO mod with nakul
+		new AsyncTask<Void, Void, String>()
+		{
+            @Override
+            protected String doInBackground(Void... params)
+            {
+                String msg = "";
+                try {
+                    Bundle data = new Bundle();
+                        data.putString("my_message", "ALARM CANCELLED");
+                        String id = Integer.toString(msgId.incrementAndGet());
+                        gcm.send(SENDER_ID + "@gcm.googleapis.com", id, data);//TODO change
+                        msg = "Sent message";
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+                }
+                return msg;
+            }
+            @Override
+            protected void onPostExecute(String msg) {
+                mDisplay.append(msg + "\n");
+            }
+        }.execute(null, null, null);
     }
     /*
      * time finishes on alarm
