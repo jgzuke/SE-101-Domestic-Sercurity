@@ -5,5 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="set">Ok</string>
     <string name="cancel">Cancel</string>
+    <string name="title_activity_on_alarm">OnAlarmActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

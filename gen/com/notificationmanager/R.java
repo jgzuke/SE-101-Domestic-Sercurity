@@ -1964,6 +1964,15 @@ containing a value of this type.
  Default text size for action bar title.
          */
         public static final int abc_text_size_title_material_toolbar=0x7f0b0012;
+        /**  Default screen margins, per the Android Design guidelines. 
+
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
+         */
+        public static final int activity_horizontal_margin=0x7f0b002b;
+        public static final int activity_vertical_margin=0x7f0b002c;
         /**  The platform's desired fixed height for a dialog along the major axis
          (the screen is in portrait). This may be either a fraction or a dimension.
  The platform's desired fixed height for a dialog along the major axis
@@ -2197,26 +2206,27 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f0c0046;
         public static final int action_mode_bar_stub=0x7f0c0045;
         public static final int action_mode_close_button=0x7f0c0039;
+        public static final int action_settings=0x7f0c0074;
         public static final int activity_chooser_view_content=0x7f0c003a;
         public static final int always=0x7f0c0025;
         public static final int beginning=0x7f0c002c;
         public static final int blue=0x7f0c0068;
         public static final int book_now=0x7f0c0017;
         public static final int bottom=0x7f0c002f;
-        public static final int button=0x7f0c005b;
-        public static final int buttonFloat=0x7f0c005d;
-        public static final int buttonFloatSmall=0x7f0c005e;
+        public static final int button=0x7f0c0057;
+        public static final int buttonFloat=0x7f0c0059;
+        public static final int buttonFloatSmall=0x7f0c005a;
         public static final int button_accept=0x7f0c006c;
         public static final int button_cancel=0x7f0c006b;
-        public static final int buttonflat=0x7f0c005a;
+        public static final int buttonflat=0x7f0c0056;
         public static final int buyButton=0x7f0c0013;
         public static final int buy_now=0x7f0c0018;
         public static final int buy_with_google=0x7f0c0019;
         public static final int callAlarm=0x7f0c006f;
-        public static final int callSercurity=0x7f0c0056;
-        public static final int cancelAlarm=0x7f0c0057;
+        public static final int callSercurity=0x7f0c0063;
+        public static final int cancelAlarm=0x7f0c0064;
         public static final int changePass=0x7f0c006e;
-        public static final int checkBox=0x7f0c005f;
+        public static final int checkBox=0x7f0c005b;
         public static final int checkbox=0x7f0c0042;
         public static final int classic=0x7f0c001a;
         public static final int collapseActionView=0x7f0c0026;
@@ -2226,14 +2236,14 @@ containing a value of this type.
         public static final int dialog=0x7f0c002a;
         public static final int disableHome=0x7f0c001f;
         public static final int dropdown=0x7f0c002b;
-        public static final int editText=0x7f0c0074;
+        public static final int editText=0x7f0c0075;
         public static final int edit_query=0x7f0c0048;
         public static final int end=0x7f0c002d;
         public static final int expand_activities_button=0x7f0c003b;
         public static final int expanded_menu=0x7f0c0041;
         public static final int grayscale=0x7f0c001b;
         public static final int green=0x7f0c0067;
-        public static final int grid=0x7f0c0054;
+        public static final int grid=0x7f0c0061;
         public static final int holo_dark=0x7f0c000e;
         public static final int holo_light=0x7f0c000f;
         public static final int home=0x7f0c0000;
@@ -2242,7 +2252,7 @@ containing a value of this type.
         public static final int icon=0x7f0c003f;
         public static final int ifRoom=0x7f0c0027;
         public static final int image=0x7f0c003c;
-        public static final int layout=0x7f0c0059;
+        public static final int layout=0x7f0c0055;
         public static final int listMode=0x7f0c001d;
         public static final int list_item=0x7f0c003e;
         public static final int mainLayout=0x7f0c006d;
@@ -2255,17 +2265,17 @@ containing a value of this type.
         public static final int normal=0x7f0c000b;
         public static final int number_indicator_spinner_content=0x7f0c0070;
         public static final int production=0x7f0c0010;
-        public static final int progressBarCircularIndetermininate=0x7f0c0064;
-        public static final int progressBarIndeterminate=0x7f0c0062;
-        public static final int progressBarIndeterminateDeterminate=0x7f0c0063;
-        public static final int progressDeterminate=0x7f0c0061;
+        public static final int progressBarCircularIndetermininate=0x7f0c0060;
+        public static final int progressBarIndeterminate=0x7f0c005e;
+        public static final int progressBarIndeterminateDeterminate=0x7f0c005f;
+        public static final int progressDeterminate=0x7f0c005d;
         public static final int progress_circular=0x7f0c0007;
         public static final int progress_horizontal=0x7f0c0008;
         public static final int radio=0x7f0c0044;
         public static final int red=0x7f0c0066;
         public static final int sandbox=0x7f0c0011;
         public static final int satellite=0x7f0c000c;
-        public static final int scroll=0x7f0c0058;
+        public static final int scroll=0x7f0c0054;
         public static final int search_badge=0x7f0c004a;
         public static final int search_bar=0x7f0c0049;
         public static final int search_button=0x7f0c004b;
@@ -2282,16 +2292,16 @@ containing a value of this type.
         public static final int showCustom=0x7f0c0021;
         public static final int showHome=0x7f0c0022;
         public static final int showTitle=0x7f0c0023;
-        public static final int slider=0x7f0c005c;
+        public static final int slider=0x7f0c0058;
         public static final int snackbar=0x7f0c0071;
         public static final int split_action_bar=0x7f0c0004;
         public static final int strict_sandbox=0x7f0c0012;
         public static final int submit_area=0x7f0c0051;
-        public static final int switchView=0x7f0c0060;
+        public static final int switchView=0x7f0c005c;
         public static final int tabMode=0x7f0c001e;
         public static final int terrain=0x7f0c000d;
         public static final int text=0x7f0c0072;
-        public static final int time=0x7f0c0055;
+        public static final int time=0x7f0c0062;
         public static final int title=0x7f0c0040;
         public static final int top=0x7f0c0030;
         public static final int top_action_bar=0x7f0c0036;
@@ -2359,8 +2369,8 @@ containing a value of this type.
         public static final int abc_search_view=0x7f03001c;
         public static final int abc_simple_decor=0x7f03001d;
         public static final int abc_simple_dropdown_hint=0x7f03001e;
-        public static final int activealarm=0x7f03001f;
-        public static final int activity_main=0x7f030020;
+        public static final int activity_main=0x7f03001f;
+        public static final int activity_on_alarm=0x7f030020;
         public static final int color_selector=0x7f030021;
         public static final int dialog=0x7f030022;
         public static final int mainscreen=0x7f030023;
@@ -2368,6 +2378,9 @@ containing a value of this type.
         public static final int snackbar=0x7f030025;
         public static final int support_simple_spinner_dropdown_item=0x7f030026;
         public static final int text=0x7f030027;
+    }
+    public static final class menu {
+        public static final int on_alarm=0x7f0d0000;
     }
     public static final class string {
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -2424,6 +2437,7 @@ containing a value of this type.
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f070031;
         public static final int accept=0x7f070002;
+        public static final int action_settings=0x7f070037;
         public static final int app_name=0x7f070023;
         public static final int cancel=0x7f070035;
         /**   Text for notification shown when the Android Wear apps needs to be updated. Only shown on the wearable. [CHAR LIMIT=NONE] 
@@ -2532,6 +2546,7 @@ containing a value of this type.
         public static final int set=0x7f070034;
         public static final int store_picture_message=0x7f070001;
         public static final int store_picture_title=0x7f070000;
+        public static final int title_activity_on_alarm=0x7f070036;
         /**  Text on a placeholder buy button when Google Play services is not
          available or up-to-date 
          */

@@ -44,16 +44,12 @@ public class MainActivity extends Activity
 	private byte[] savedData = new byte[3];
 	private int password;
 	private int passwordEntered;
-	private boolean alarmActive = false;
 	final private Context context = this;
 	final private MainActivity activity = this;
-	private int timeTillCall = 0;
-	private Handler mHandler = new Handler();
 	private AlertDialog.Builder builder;
 	private AlertDialog passDialog;
 	private EditText passInput;
 	private LayoutInflater layoutInflater;
-	private TextView timeText;
 	public static final String EXTRA_MESSAGE = "message";
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
@@ -65,21 +61,6 @@ public class MainActivity extends Activity
     AtomicInteger msgId = new AtomicInteger();
     SharedPreferences prefs;
     String regid;
-	private Runnable counterdownCaller = new Runnable()
-	{
-		public void run()
-		{
-			timeTillCall --;
-			timeText.setText("Time left: "+Integer.toString(timeTillCall));
-			if(timeTillCall==0)
-			{
-				activity.timeUp();
-			} else if(alarmActive)
-			{
-				mHandler.postDelayed(this, 1000);
-			}
-		}
-	};
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -91,8 +72,6 @@ public class MainActivity extends Activity
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 	    getActionBar().hide();
 		setContentView(R.layout.mainscreen);
-		((ButtonFlat) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
-		((ButtonFlat) findViewById(R.id.changePass)).setOnClickListener(changePassword);
 		if(savedData[0]==0) setNewPassword();
 		
 		
@@ -260,82 +239,18 @@ public class MainActivity extends Activity
     
     
     
-    
-    /*
-     * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
-     */
-    public void activateAlarm(boolean [][] code)
+    private void activateAlarm(boolean [][] code)
     {
-    	Toast.makeText(context, "Alarm Activated", Toast.LENGTH_LONG).show();
-    	alarmActive = true;
-    	LinearLayout fullLayout = (LinearLayout) layoutInflater.inflate(R.layout.activealarm, null, false);
-    	setContentView(fullLayout);
-    	TableLayout grid = (TableLayout) fullLayout.getChildAt(0);
-    	for(int i = 0; i < 3; i++)
-    	{
-    		TableRow row = (TableRow) layoutInflater.inflate(R.xml.checkerrow, grid, false);
-    		for(int j = 0; j < 3; j++)
-        	{
-    			if(code[i][j])row.getChildAt(j).setBackgroundColor(Color.BLACK);
-    			else row.getChildAt(j).setBackgroundColor(Color.WHITE);
-        	}
-    		grid.addView(row);
-    	}
-    	timeText = (TextView) findViewById(R.id.time);
-    	((ButtonFlat) findViewById(R.id.cancelAlarm)).setOnClickListener(cancelAlarm);
-    	((ButtonFlat) findViewById(R.id.callSercurity)).setOnClickListener(callSercurity);
-    	timeTillCall = 10;
-    	counterdownCaller.run();
+    	//TODO should we even bother?
     }
-    /*
-     * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
-     */
-    public void cancelAlarm()
-    {
-    	alarmActive = false;
-    	LinearLayout fullLayout = (LinearLayout) layoutInflater.inflate(R.layout.mainscreen, null, false);
-    	setContentView(fullLayout);
-    	Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_LONG).show();
-    	((ButtonFlat) findViewById(R.id.callAlarm)).setOnClickListener(callAlarm);
-		((ButtonFlat) findViewById(R.id.changePass)).setOnClickListener(changePassword);
-		
-		
-		//Sends message back to server saying it was cancelled
-		//TODO mod with nakul
-		new AsyncTask<Void, Void, String>()
+    View.OnClickListener callAlarm = new View.OnClickListener()
+	{
+		public void onClick(View v)
 		{
-            @Override
-            protected String doInBackground(Void... params)
-            {
-                String msg = "";
-                try {
-                    Bundle data = new Bundle();
-                        data.putString("my_message", "ALARM CANCELLED");
-                        String id = Integer.toString(msgId.incrementAndGet());
-                        gcm.send(SENDER_ID + "@gcm.googleapis.com", id, data);//TODO change
-                        msg = "Sent message";
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                }
-                return msg;
-            }
-            @Override
-            protected void onPostExecute(String msg) {
-                mDisplay.append(msg + "\n");
-            }
-        }.execute(null, null, null);
-    }
-    /*
-     * time finishes on alarm
-     */
-    public void timeUp()
-    {
-    	alarmActive = false;
-    	Intent intent = new Intent(Intent.ACTION_CALL);
-		intent.setData(Uri.parse("tel:2268688127"));
-		context.startActivity(intent);
-		cancelAlarm();
-    }
+			boolean [][] code = {{true, false, false},{false, true, false},{false, true, true}};
+			activateAlarm(code);
+		}
+	};
     /*
      * creates alertdialog to choose a password
      */
@@ -368,28 +283,6 @@ public class MainActivity extends Activity
 			}
 		});
     }
-    View.OnClickListener callSercurity = new View.OnClickListener()
-	{
-		public void onClick(View v)
-		{
-			 timeUp();
-		}
-	};
-    View.OnClickListener cancelAlarm = new View.OnClickListener()
-	{
-		public void onClick(View v)
-		{
-			 cancelAlarm();
-		}
-	};
-    View.OnClickListener callAlarm = new View.OnClickListener()
-	{
-		public void onClick(View v)
-		{
-			boolean [][] code = {{true, false, false},{false, true, false},{false, true, true}};
-			activateAlarm(code);
-		}
-	};
 	View.OnClickListener changePassword = new View.OnClickListener()
 	{
 		public void onClick(View v)
