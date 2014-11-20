@@ -82,6 +82,7 @@ public class MainActivity extends Activity
         {
             registerInBackground();
         }
+        Log.e("asg", regid);
     }
     /**
      * Gets the current registration ID for application on GCM service.

@@ -26,6 +26,25 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+
+
+
+
+
+
+
+
+
+
+
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.WakefulBroadcastReceiver;
+import android.util.Log;
+
 public class OnAlarmActivity extends Activity
 {
 	private TextView timeText;
@@ -56,16 +75,25 @@ public class OnAlarmActivity extends Activity
 			}
 		}
 	};
+	private boolean [][] stringToBoolean(String s)
+	{
+		boolean [][] code = new boolean[3][3];
+		for(int i = 0; i < 3; i ++)
+		{
+			for(int j = 0; j < 3; j++)
+			{
+				int index = 1+(6*i)+(2*j);
+				code[i][j] = (s.charAt(index)=='1');
+			}
+		}
+		return code;
+	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		//TODO get code and set to code
 		super.onCreate(savedInstanceState);
-		/*if(savedInstanceState.get("data")==null)
-		{
-			Log.e("null", "k");
-		}*/
-		//code = (boolean[][]) savedInstanceState.get("data");
+		Log.e("dsfsdfgjk", check);
+		code = stringToBoolean(check);
 		Toast.makeText(context, "Alarm Activated", Toast.LENGTH_LONG).show();
 		layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
     	LinearLayout fullLayout = (LinearLayout) layoutInflater.inflate(R.layout.activity_on_alarm, null, false);
@@ -76,8 +104,8 @@ public class OnAlarmActivity extends Activity
     		TableRow row = (TableRow) layoutInflater.inflate(R.xml.checkerrow, grid, false);
     		for(int j = 0; j < 3; j++)
         	{
-    			/*if(code[i][j])row.getChildAt(j).setBackgroundColor(Color.BLACK);
-    			else row.getChildAt(j).setBackgroundColor(Color.WHITE);*/
+    			if(code[i][j])row.getChildAt(j).setBackgroundColor(Color.BLACK);
+    			else row.getChildAt(j).setBackgroundColor(Color.WHITE);
         	}
     		grid.addView(row);
     	}
@@ -96,7 +124,7 @@ public class OnAlarmActivity extends Activity
 		//Sends message back to server saying it was cancelled
 		//TODO mod with nakul
     	//Maybe just this, or do we need more?
-		new AsyncTask<Void, Void, String>()
+		/*new AsyncTask<Void, Void, String>()
 		{
             @Override
             protected String doInBackground(Void... params)
@@ -117,7 +145,8 @@ public class OnAlarmActivity extends Activity
             protected void onPostExecute(String msg) {
                 mDisplay.append(msg + "\n");
             }
-        }.execute(null, null, null);
+        }.execute(null, null, null);*/
+    	finish();
     }
     /*
      * time finishes on alarm
@@ -126,7 +155,7 @@ public class OnAlarmActivity extends Activity
     {
     	Intent intent = new Intent(Intent.ACTION_CALL);
 		intent.setData(Uri.parse("tel:2268688127"));
-		context.startActivity(intent);
+		//context.startActivity(intent);
 		cancelAlarm();
     }
     
@@ -166,5 +195,23 @@ public class OnAlarmActivity extends Activity
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	static String check;
+	public static class AlarmReciever extends WakefulBroadcastReceiver
+	{
+	    @Override
+	    public void onReceive(Context context, Intent intent)
+	    {
+	    	Log.e("g",  intent.getStringExtra("random_list"));
+	    	check = intent.getStringExtra("random_list");
+	        // Explicitly specify that GcmIntentService will handle the intent.
+	        ComponentName comp = new ComponentName(context.getPackageName(),
+	                OnAlarm.class.getName());
+	        // Start the service, keeping the device awake while it is launching.
+	        Intent sendToNext = (intent.setComponent(comp));
+	        sendToNext.putExtra("code", check);
+	        startWakefulService(context, sendToNext);
+	        setResultCode(Activity.RESULT_OK);
+	    }
 	}
 }
