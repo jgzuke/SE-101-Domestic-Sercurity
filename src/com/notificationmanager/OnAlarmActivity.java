@@ -62,10 +62,7 @@ public class OnAlarmActivity extends Activity
 	private AlertDialog.Builder builder;
 	private AlertDialog passDialog;
 	private EditText passInput;
-	private TextView timeText;
 	final private Context context = this;
-	private Handler mHandler = new Handler();
-	private int timeTillCall = 0;
 	private LayoutInflater layoutInflater;
     String SENDER_ID = "durable-cacao-769";
     static final String TAG = "GCMDemo";
@@ -77,24 +74,6 @@ public class OnAlarmActivity extends Activity
     static boolean alarmOn = true;
     private boolean[][] code;
     public static Activity activity;
-	private Runnable counterdownCaller = new Runnable()
-	{
-		public void run()
-		{
-			if(alarmOn)
-			{
-				timeTillCall --;
-				timeText.setText("Time left: "+Integer.toString(timeTillCall));
-				if(timeTillCall==0)
-				{
-					timeUp();
-				} else
-				{
-					mHandler.postDelayed(this, 1000);
-				}
-			}
-		}
-	};
 	private boolean [][] stringToBoolean(String s)
 	{
 		boolean [][] code = new boolean[3][3];
@@ -133,11 +112,8 @@ public class OnAlarmActivity extends Activity
         	}
     		grid.addView(row);
     	}
-    	timeText = (TextView) findViewById(R.id.time);
     	((ButtonFlat) findViewById(R.id.cancelAlarm)).setOnClickListener(cancelAlarm);
     	((ButtonFlat) findViewById(R.id.callSercurity)).setOnClickListener(callSercurity);
-    	timeTillCall = 60;
-    	counterdownCaller.run();
 	}
 	private void setKeepScreenOn(boolean b) {
 		// TODO Auto-generated method stub
@@ -279,10 +255,10 @@ public class OnAlarmActivity extends Activity
 	    	{
 	    		if(intent.getStringExtra("correct_code").equals(0))
 	    		{
-	    			cancelAlarm();
+	    			
 	    		} else
 	    		{
-	    			
+	    			cancelAlarm();
 	    		}
 	    	}
 	        setResultCode(Activity.RESULT_OK);
