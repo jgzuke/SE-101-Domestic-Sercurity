@@ -9,6 +9,7 @@ import android.support.v4.content.WakefulBroadcastReceiver;
 public class AlarmReciever extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+    	String check = intent.getStringExtra("random_list");
         // Explicitly specify that GcmIntentService will handle the intent.
         ComponentName comp = new ComponentName(context.getPackageName(),
                 OnAlarm.class.getName());

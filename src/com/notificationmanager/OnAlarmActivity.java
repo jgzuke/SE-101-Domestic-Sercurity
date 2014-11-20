@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -60,8 +61,13 @@ public class OnAlarmActivity extends Activity
 	{
 		//TODO get code and set to code
 		super.onCreate(savedInstanceState);
-		code = (boolean[][]) savedInstanceState.get("code");
+		/*if(savedInstanceState.get("data")==null)
+		{
+			Log.e("null", "k");
+		}*/
+		//code = (boolean[][]) savedInstanceState.get("data");
 		Toast.makeText(context, "Alarm Activated", Toast.LENGTH_LONG).show();
+		layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
     	LinearLayout fullLayout = (LinearLayout) layoutInflater.inflate(R.layout.activity_on_alarm, null, false);
     	setContentView(fullLayout);
     	TableLayout grid = (TableLayout) fullLayout.getChildAt(0);
@@ -70,8 +76,8 @@ public class OnAlarmActivity extends Activity
     		TableRow row = (TableRow) layoutInflater.inflate(R.xml.checkerrow, grid, false);
     		for(int j = 0; j < 3; j++)
         	{
-    			if(code[i][j])row.getChildAt(j).setBackgroundColor(Color.BLACK);
-    			else row.getChildAt(j).setBackgroundColor(Color.WHITE);
+    			/*if(code[i][j])row.getChildAt(j).setBackgroundColor(Color.BLACK);
+    			else row.getChildAt(j).setBackgroundColor(Color.WHITE);*/
         	}
     		grid.addView(row);
     	}

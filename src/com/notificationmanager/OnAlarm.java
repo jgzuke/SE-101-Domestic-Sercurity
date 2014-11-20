@@ -25,9 +25,8 @@ public class OnAlarm extends IntentService
             if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType))
             {
             	Intent intentMakeActivity = new Intent(this, OnAlarmActivity.class);
-            	//intentMakeActivity.putExtra("code", code);
-            	//TODO with nakul get that code from bundle, maybe it can be in there from start
-            	startActivity(intent);
+            	intentMakeActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            	getApplication().startActivity(intentMakeActivity);
             }
         }
     	AlarmReciever.completeWakefulIntent(intent);

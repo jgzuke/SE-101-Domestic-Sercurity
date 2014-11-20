@@ -54,7 +54,7 @@ public class MainActivity extends Activity
     public static final String PROPERTY_REG_ID = "registration_id";
     private static final String PROPERTY_APP_VERSION = "appVersion";
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-    String SENDER_ID = "durable-cacao-769";
+    String SENDER_ID = "148043713826";
     static final String TAG = "GCMDemo";
     TextView mDisplay;
     GoogleCloudMessaging gcm;
@@ -91,7 +91,8 @@ public class MainActivity extends Activity
      * @return registration ID, or empty string if there is no existing
      *         registration ID.
      */
-    private String getRegistrationId(Context context) {
+    private String getRegistrationId(Context context)
+    {
         final SharedPreferences prefs = getGCMPreferences(context);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
         if (registrationId.isEmpty()) {
@@ -168,11 +169,6 @@ public class MainActivity extends Activity
                     // exponential back-off.
                 }
                 return msg;
-            }
-
-            @Override
-            protected void onPostExecute(String msg) {
-                mDisplay.append(msg + "\n");
             }
         }.execute(null, null, null);
     }
