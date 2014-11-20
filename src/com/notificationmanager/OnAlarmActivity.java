@@ -1,5 +1,8 @@
 package com.notificationmanager;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -7,7 +10,9 @@ import com.gc.materialdesign.views.ButtonFlat;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -15,11 +20,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -47,6 +54,14 @@ import android.util.Log;
 
 public class OnAlarmActivity extends Activity
 {
+	private FileOutputStream fileWrite;
+	private FileInputStream fileRead;
+	private int passwordEntered;
+	private byte[] savedData = new byte[3];
+	private int password;
+	private AlertDialog.Builder builder;
+	private AlertDialog passDialog;
+	private EditText passInput;
 	private TextView timeText;
 	final private Context context = this;
 	private Handler mHandler = new Handler();
@@ -59,19 +74,23 @@ public class OnAlarmActivity extends Activity
     AtomicInteger msgId = new AtomicInteger();
     SharedPreferences prefs;
     String regid;
+    boolean alarmOn = true;
     private boolean[][] code;
 	private Runnable counterdownCaller = new Runnable()
 	{
 		public void run()
 		{
-			timeTillCall --;
-			timeText.setText("Time left: "+Integer.toString(timeTillCall));
-			if(timeTillCall==0)
+			if(alarmOn)
 			{
-				timeUp();
-			} else
-			{
-				mHandler.postDelayed(this, 1000);
+				timeTillCall --;
+				timeText.setText("Time left: "+Integer.toString(timeTillCall));
+				if(timeTillCall==0)
+				{
+					timeUp();
+				} else
+				{
+					mHandler.postDelayed(this, 1000);
+				}
 			}
 		}
 	};
@@ -92,6 +111,8 @@ public class OnAlarmActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		read();
+		readSaveData();
 		Log.e("dsfsdfgjk", check);
 		code = stringToBoolean(check);
 		Toast.makeText(context, "Alarm Activated", Toast.LENGTH_LONG).show();
@@ -121,31 +142,7 @@ public class OnAlarmActivity extends Activity
     public void cancelAlarm()
     {
     	Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_LONG).show();
-		//Sends message back to server saying it was cancelled
-		//TODO mod with nakul
-    	//Maybe just this, or do we need more?
-		/*new AsyncTask<Void, Void, String>()
-		{
-            @Override
-            protected String doInBackground(Void... params)
-            {
-                String msg = "";
-                try {
-                    Bundle data = new Bundle();
-                        data.putString("my_message", "ALARM CANCELLED");
-                        String id = Integer.toString(msgId.incrementAndGet());
-                        gcm.send(SENDER_ID + "@gcm.googleapis.com", id, data);//TODO change
-                        msg = "Sent message";
-                } catch (IOException ex) {
-                    msg = "Error :" + ex.getMessage();
-                }
-                return msg;
-            }
-            @Override
-            protected void onPostExecute(String msg) {
-                mDisplay.append(msg + "\n");
-            }
-        }.execute(null, null, null);*/
+    	alarmOn = false;
     	finish();
     }
     /*
@@ -158,6 +155,68 @@ public class OnAlarmActivity extends Activity
 		context.startActivity(intent);
 		cancelAlarm();
     }
+    /*
+     * creates alertdialog to choose a password
+     */
+    public void enterPasswordPrompt(boolean cancelable)
+    {
+    	buildPasswordPromptBox(cancelable, "Enter your 4 digit Passcode");
+		passDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View set)
+			{
+				String passwordEnteredRaw = passInput.getText().toString();
+					if(passwordEnteredRaw.length()!=4)
+					{
+						Toast.makeText(context, "Try Again (4 digits)", Toast.LENGTH_LONG).show();
+						passInput.setText("");
+					} else
+					{
+						passwordEntered = Integer.parseInt(passwordEnteredRaw);
+						if(passwordEntered != password)
+						{
+							Toast.makeText(context, "Incorrect Passcode", Toast.LENGTH_LONG).show();
+							passInput.setText("");
+						} else
+						{
+							passDialog.dismiss();
+							cancelAlarm();
+						}
+					}
+			}
+		});
+    }
+    public void buildPasswordPromptBox(boolean negativeButton, String title)
+	{
+		builder = new AlertDialog.Builder(this);
+		passInput = new EditText(this);
+		passInput.setRawInputType(InputType.TYPE_CLASS_NUMBER);
+		passInput.setText("");
+		builder.setView(passInput);
+		builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int id)
+			{
+				// User cancelled the dialog
+			}
+		});
+		if(negativeButton)
+		{
+			builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+			{
+				@Override
+				public void onClick(DialogInterface dialog, int id)
+				{
+					// User cancelled the dialog
+				}
+			});
+		}
+		builder.setTitle(title);
+		passDialog = builder.create();
+		passDialog.show();
+	}
     View.OnClickListener callSercurity = new View.OnClickListener()
 	{
 		public void onClick(View v)
@@ -169,7 +228,7 @@ public class OnAlarmActivity extends Activity
 	{
 		public void onClick(View v)
 		{
-			 cancelAlarm();
+			 enterPasswordPrompt(true);
 		}
 	};
 	@Override
@@ -208,5 +267,109 @@ public class OnAlarmActivity extends Activity
 	        startWakefulService(context, sendToNext);
 	        setResultCode(Activity.RESULT_OK);
 	    }
+	}
+	/**
+	 * set data to write it to save file
+	 */
+	public void setSaveData()
+	{
+		savedData[2] = (byte)(Math.floor(password/128));
+		savedData[1] = (byte)(password-(128*savedData[2]));
+	}
+	/**
+	 * read data once it has been put into savedData array
+	 */
+	public void readSaveData()
+	{
+		password = savedData[1]+(128*savedData[2]);
+	}
+    /**
+	 * reads data from file and sets variables accordingly
+	 */
+	private void read()
+	{
+		openRead();
+		try
+		{
+			fileRead.read(savedData, 0, 3);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		closeRead();
+	}
+	/**
+	 * saves data to file
+	 */
+	private void write()
+	{
+		openWrite();
+		try
+		{
+			fileWrite.write(savedData, 0, 3);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		closeWrite();
+	}
+	/**
+	 * opens the save file to be read from
+	 */
+	private void openRead()
+	{
+		try
+		{
+			fileRead = openFileInput("ProjectSaveData");
+		}
+		catch(FileNotFoundException e)
+		{
+			openWrite();
+			closeWrite();
+			openRead();
+		}
+	}
+	/**
+	 * opens the save file to be written to
+	 */
+	private void openWrite()
+	{
+		try
+		{
+			fileWrite = openFileOutput("ProjectSaveData", Context.MODE_PRIVATE);
+		}
+		catch(FileNotFoundException e)
+		{
+		}
+	}
+	/**
+	 * closes the save file from reading
+	 */
+	private void closeRead()
+	{
+		try
+		{
+			fileRead.close();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * closes the save file from writing
+	 */
+	private void closeWrite()
+	{
+		try
+		{
+			fileWrite.close();
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
