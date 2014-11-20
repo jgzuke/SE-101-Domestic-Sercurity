@@ -74,8 +74,9 @@ public class OnAlarmActivity extends Activity
     AtomicInteger msgId = new AtomicInteger();
     SharedPreferences prefs;
     String regid;
-    boolean alarmOn = true;
+    static boolean alarmOn = true;
     private boolean[][] code;
+    public static Activity activity;
 	private Runnable counterdownCaller = new Runnable()
 	{
 		public void run()
@@ -113,6 +114,7 @@ public class OnAlarmActivity extends Activity
 		super.onCreate(savedInstanceState);
 		read();
 		readSaveData();
+		activity = this;
 		Log.e("dsfsdfgjk", check);
 		code = stringToBoolean(check);
 		Toast.makeText(context, "Alarm Activated", Toast.LENGTH_LONG).show();
@@ -141,15 +143,6 @@ public class OnAlarmActivity extends Activity
 		// TODO Auto-generated method stub
 		
 	}
-	/*
-     * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
-     */
-    public void cancelAlarm()
-    {
-    	Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_LONG).show();
-    	alarmOn = false;
-    	finish();
-    }
     /*
      * time finishes on alarm
      */
@@ -256,20 +249,42 @@ public class OnAlarmActivity extends Activity
 		return super.onOptionsItemSelected(item);
 	}
 	static String check;
+	/*
+     * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
+     */
+    public static void cancelAlarm()
+    {
+    	//Toast.makeText(context, "Alarm Cancelled", Toast.LENGTH_LONG).show();
+    	alarmOn = false;
+    	activity.finish();
+    }
 	public static class AlarmReciever extends WakefulBroadcastReceiver
 	{
 	    @Override
 	    public void onReceive(Context context, Intent intent)
 	    {
-	    	Log.e("g",  intent.getStringExtra("random_list"));
-	    	check = intent.getStringExtra("random_list");
-	        // Explicitly specify that GcmIntentService will handle the intent.
-	        ComponentName comp = new ComponentName(context.getPackageName(),
-	                OnAlarm.class.getName());
-	        // Start the service, keeping the device awake while it is launching.
-	        Intent sendToNext = (intent.setComponent(comp));
-	        sendToNext.putExtra("code", check);
-	        startWakefulService(context, sendToNext);
+	    	Log.e("g",  intent.getStringExtra("identifier"));
+	    	if(intent.getStringExtra("identifier").equals("0"))
+	    	{
+	    		Log.e("g",  intent.getStringExtra("random_list"));
+		    	check = intent.getStringExtra("random_list");
+		        // Explicitly specify that GcmIntentService will handle the intent.
+		        ComponentName comp = new ComponentName(context.getPackageName(),
+		                OnAlarm.class.getName());
+		        // Start the service, keeping the device awake while it is launching.
+		        Intent sendToNext = (intent.setComponent(comp));
+		        sendToNext.putExtra("code", check);
+		        startWakefulService(context, sendToNext);
+	    	} else
+	    	{
+	    		if(intent.getStringExtra("correct_code").equals(0))
+	    		{
+	    			cancelAlarm();
+	    		} else
+	    		{
+	    			
+	    		}
+	    	}
 	        setResultCode(Activity.RESULT_OK);
 	    }
 	}
