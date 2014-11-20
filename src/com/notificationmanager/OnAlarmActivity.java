@@ -62,7 +62,7 @@ public class OnAlarmActivity extends Activity
 	private AlertDialog.Builder builder;
 	private AlertDialog passDialog;
 	private EditText passInput;
-	final private Context context = this;
+	private static Context context;
 	private LayoutInflater layoutInflater;
     String SENDER_ID = "durable-cacao-769";
     static final String TAG = "GCMDemo";
@@ -94,6 +94,7 @@ public class OnAlarmActivity extends Activity
 		read();
 		readSaveData();
 		activity = this;
+		context = this;
 		Log.e("dsfsdfgjk", check);
 		code = stringToBoolean(check);
 		Toast.makeText(context, "Alarm Activated", Toast.LENGTH_LONG).show();
@@ -122,7 +123,7 @@ public class OnAlarmActivity extends Activity
     /*
      * time finishes on alarm
      */
-    public void timeUp()
+    public static void timeUp()
     {
     	Intent intent = new Intent(Intent.ACTION_CALL);
 		intent.setData(Uri.parse("tel:2268688127"));
@@ -253,9 +254,10 @@ public class OnAlarmActivity extends Activity
 		        startWakefulService(context, sendToNext);
 	    	} else
 	    	{
-	    		if(intent.getStringExtra("correct_code").equals(0))
+	    		Log.e(intent.getStringExtra("correct_code"), intent.getStringExtra("correct_code"));
+	    		if(intent.getStringExtra("correct_code").equals("['0']"))
 	    		{
-	    			
+	    			timeUp();
 	    		} else
 	    		{
 	    			cancelAlarm();
