@@ -119,6 +119,7 @@ public class OnAlarmActivity extends Activity
 		layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
     	LinearLayout fullLayout = (LinearLayout) layoutInflater.inflate(R.layout.activity_on_alarm, null, false);
     	setContentView(fullLayout);
+    	setKeepScreenOn(true);
     	TableLayout grid = (TableLayout) fullLayout.getChildAt(0);
     	for(int i = 0; i < 3; i++)
     	{
@@ -135,6 +136,10 @@ public class OnAlarmActivity extends Activity
     	((ButtonFlat) findViewById(R.id.callSercurity)).setOnClickListener(callSercurity);
     	timeTillCall = 60;
     	counterdownCaller.run();
+	}
+	private void setKeepScreenOn(boolean b) {
+		// TODO Auto-generated method stub
+		
 	}
 	/*
      * 			THIS IS THE CALL FROM THE ROBOT, INCLUDE 2D ARRAY WITH CODE, BOOLEAN B+W
