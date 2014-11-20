@@ -112,7 +112,7 @@ public class OnAlarmActivity extends Activity
     	timeText = (TextView) findViewById(R.id.time);
     	((ButtonFlat) findViewById(R.id.cancelAlarm)).setOnClickListener(cancelAlarm);
     	((ButtonFlat) findViewById(R.id.callSercurity)).setOnClickListener(callSercurity);
-    	timeTillCall = 40;
+    	timeTillCall = 60;
     	counterdownCaller.run();
 	}
 	/*
@@ -155,14 +155,9 @@ public class OnAlarmActivity extends Activity
     {
     	Intent intent = new Intent(Intent.ACTION_CALL);
 		intent.setData(Uri.parse("tel:2268688127"));
-		//context.startActivity(intent);
+		context.startActivity(intent);
 		cancelAlarm();
     }
-    
-    
-    
-    
-
     View.OnClickListener callSercurity = new View.OnClickListener()
 	{
 		public void onClick(View v)
